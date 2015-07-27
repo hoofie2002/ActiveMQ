@@ -21,6 +21,7 @@ import org.junit.Test;
 
 public class FailoverTransmission {
 
+	
 	/**
 	 * Test will use the failover: protocol to send messages to a distributed queue
 	 * Run the test with Broker 1 shut down and then with Broker 2 shut down
@@ -35,21 +36,26 @@ public class FailoverTransmission {
 	private static final int NUMBER_OF_MSGS_TO_SEND = 2;
 	private static final String DUPLICATED_QUEUE_NAME = "Q.REMOTE.FAILOVER";
 	private ActiveMQConnectionFactory connectionFactory;
-
 	private Connection connection;
-
 	private Session session;
-
 	private List<String> msgIdList = new ArrayList<String>();
+	private static final String TCP_ENDPOINT_BROKER_1 = "tcp://10.15.2.10:61616";
+	private static final String TCP_ENDPOINT_BROKER_2 = "tcp://10.15.2.11:61616";
+	private boolean isSecure=true;
 
-	private static final String TCP_ENDPOINT_BROKER_1 = "tcp://10.15.2.20:61616";
-	private static final String TCP_ENDPOINT_BROKER_2 = "tcp://10.15.2.21:61616";
+	private static final String USERNAME = "jboss";
+	private static final String PASSWORD = "jboss";
+
 
 	@Before
 	public void setUp() throws Exception {
 		connectionFactory = new ActiveMQConnectionFactory("failover:("
 				+ TCP_ENDPOINT_BROKER_1 + "," + TCP_ENDPOINT_BROKER_2 + ")");
-		connection = connectionFactory.createConnection();
+		if (isSecure) {
+			connection = connectionFactory.createConnection(USERNAME, PASSWORD);
+		} else {
+			connection = connectionFactory.createConnection();
+		}
 		connection.start();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 	}

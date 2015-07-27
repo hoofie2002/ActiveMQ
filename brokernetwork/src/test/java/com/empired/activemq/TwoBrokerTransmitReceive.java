@@ -31,33 +31,43 @@ public class TwoBrokerTransmitReceive {
 	
 	Logger logger = Logger.getLogger(TwoBrokerTransmitReceive.class.getSimpleName());
 
-	private static final int NUMBER_OF_MSGS_TO_SEND = 10;
+	private static final int NUMBER_OF_MSGS_TO_SEND = 2;
 	private static final String DUPLICATED_QUEUE_NAME = "Q.REMOTE.DUPLICATE";
+	private static final String TCP_ENDPOINT_BROKER_1 = "tcp://10.15.2.10:61616";
+	private static final String TCP_ENDPOINT_BROKER_2 = "tcp://10.15.2.11:61616";
+	private static final String USERNAME = "jboss";
+	private static final String PASSWORD = "jboss";
+
 	private ActiveMQConnectionFactory connectionFactory1;
 	private ActiveMQConnectionFactory connectionFactory2;
-
 	private Connection connection1;
 	private Connection connection2;
-
 	private Session session1;
 	private Session session2;
-
 	private List<String> msgIdList = new ArrayList<String>();
+	private boolean isSecure=true;
+	
 
-	private static final String TCP_ENDPOINT_BROKER_1 = "tcp://10.15.2.20:61616";
-	private static final String TCP_ENDPOINT_BROKER_2 = "tcp://10.15.2.21:61616";
 
 	@Before
 	public void setUp() throws Exception {
 		connectionFactory1 = new ActiveMQConnectionFactory(
 				TCP_ENDPOINT_BROKER_1);
-		connection1 = connectionFactory1.createConnection();
+		if (isSecure) {
+			connection1 = connectionFactory1.createConnection(USERNAME, PASSWORD);
+		} else {
+			connection1 = connectionFactory1.createConnection();
+		}
 		connection1.start();
 		session1 = connection1.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
 		connectionFactory2 = new ActiveMQConnectionFactory(
 				TCP_ENDPOINT_BROKER_2);
-		connection2 = connectionFactory2.createConnection();
+		if (isSecure) {
+			connection2 = connectionFactory2.createConnection(USERNAME, PASSWORD);
+		} else {
+			connection2 = connectionFactory2.createConnection();
+		}
 
 		connection2.start();
 		session2 = connection2.createSession(false, Session.AUTO_ACKNOWLEDGE);
