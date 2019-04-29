@@ -18,8 +18,8 @@
 	</modules>
 
 	<properties>
-		<java.min.version>1.7</java.min.version>
-		<activemq-version>5.11.1</activemq-version>
+		<java.min.version>1.8</java.min.version>
+		<activemq-version>[5.15.9,)</activemq-version>
 		<junit-version>4.12</junit-version>
 		<log4j-version>2.3</log4j-version>
 	</properties>
